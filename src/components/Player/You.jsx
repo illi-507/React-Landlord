@@ -13,8 +13,12 @@ const CardContainer = styled.div`
 const CardDiv = styled.div`
   display: inline-block;
 `;
+export function alertFun(){
+        alert ("WDNMD");
+}
 
-class You extends React.Component {
+
+export class You extends React.Component {
   constructor(props) {
     super(props);
     this.colorNumberToCode = {
@@ -35,42 +39,28 @@ class You extends React.Component {
       RedJoker: 17,
     };
 
-    /*[
-            { color: "diamonds", number: 7, visibility: "visible" },
-            { color: "spades", number: 10, visibility: "visible" },
-            { color: "RedJoker", number: "RedJoker", visibility: "visible" },
-            { color: "clubs", number: 6, visibility: "visible" },
-            { color: "hearts", number: 9, visibility: "visible" },
-            { color: "hearts", number: 4, visibility: "visible" },
-            { color: "spades", number: "Q", visibility: "visible" },
-        
-            { color: "spades", number: 2 },
-            { color: "clubs", number: "J" },
-            { color: "hearts", number: 7 },
-            { color: "clubs", number: 4 },
-            { color: "hearts", number: 10 },
-            { color: "hearts", number: 2 },
-            { color: "diamonds", number: 10 },
-            { color: "spades", number: "A" },
-            { color: "diamonds", number: 5 },
-            { color: "BlackJoker", number: "BlackJoker" },
-          ];*/
     this.wrapper = createRef();
     this.state = {
-      cardDeck: [],
-      array: this.props.you,
+      cardDeck: [],      
+      array: [...this.props.you],
+      selectedCards: [],
     };
+    this.parentCallBack = this.props.parentCallBack;
+   // this.getCardsArray=this.props.getCardsArray;
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.array !== this.state.array) {
+    /*if (prevState.array !== this.state.array) {
       console.log("pokemons state has changed.");
-    }
+    }*/
   }
+  alertFun2(){
+    alert ("WDNMD2");
+}
   sortCards() {
     let temp = this.props.you;
     temp.sort((a, b) =>
-      this.colorNumberToCode[a.number] > this.colorNumberToCode[b.number]
+      this.colorNumberToCode[a.number] > this.colorNumberToCode[b.number] 
         ? 1
         : -1
     );
@@ -85,7 +75,7 @@ class You extends React.Component {
     });
   }
 
-  addCard() {
+  spreadCard() {
     let i = 0;
 
     let timer = setInterval(() => {
@@ -101,13 +91,41 @@ class You extends React.Component {
         let timer2 = setInterval(() => {
           this.sortCards();
           clearInterval(timer2);
-        }, 1500);
+        }, 400);
         clearInterval(timer);
       }
     }, 300);
   }
 
+  getCardsArray = (card, selected) => {
+    let temp = this.state.selectedCards;
+    
+    if (selected) {
+      //this.parentCallBack([...temp, card]);  
+      this.setState({
+        ...this.state,
+        selectedCards: [...temp, card],
+      });
+    }
+    else{
+      temp = temp.filter(item => {
+        if(item.color!==card.color || item.number!==card.number){
+          return true;
+        }
+        return false;
+      });
+     // this.parentCallBack([...temp]);  
+      
+      this.setState({
+        ...this.state,
+        selectedCards: [...temp],
+      });
+    }
+  };
+
   render() {
+    //console.log("selectedCards: ", this.state.selectedCards);
+
     const ticketNotVisibleState = {
       transform: "translateX(-100%)",
       opacity: 0.1,
@@ -125,7 +143,7 @@ class You extends React.Component {
               colorScheme="teal"
               variant="solid"
               onClick={() => {
-                this.addCard();
+                this.spreadCard();
               }}
             >
               Deal Cards
@@ -133,22 +151,41 @@ class You extends React.Component {
             <Button
               colorScheme="teal"
               variant="solid"
-              onClick={() => this.sortCards()}
-            >
-              Sort Cards
-            </Button>
-            <Button
-              colorScheme="teal"
-              variant="solid"
-              onClick={() => {
-                this.setState({
-                  ...this.state,
-                  cardDeck: [],
-                });
+              onClick={() => {                
+                
+                  this.parentCallBack([...this.state.selectedCards]);  
+                  let selected = this.state.selectedCards;
+                  
+                  let tempAll = this.state.cardDeck;
+                  let filteredAll = [];
+                  for(let item of tempAll){
+                    let counter =0;
+                    for(let innerItem of selected){
+                      if(item.color == innerItem.color && item.number == innerItem.number ){
+                        counter ++;
+                      }
+                    }
+                     if(counter ===0){ 
+                      filteredAll.push(item);
+                    }
+                  }
+                  //console.log(tempAll);
+                  console.log("filteredAll",filteredAll);
+                  this.setState({
+                    ...this.state,
+                    cardDeck: [...filteredAll]
+                  })
               }}
             >
-              Clear Cards
+              Throw Cards
             </Button>
+            {/*<Button
+              colorScheme="teal"
+              variant="solid"
+              onClick={() => this.addCardToArray()}
+            >
+              addCardToArray
+            </Button>*/}
           </Flex>
 
           <CardContainer>
@@ -162,14 +199,14 @@ class You extends React.Component {
                 to: ticketNotVisibleState,
               }}
             >
-              {this.state.cardDeck.map((item, index) => (
+              {this.state.cardDeck
+              .map((item, index) => (
                 <CardDiv ref={this.wrapper} key={item.number + "" + item.color}>
                   <Card
                     firstCard={index === 0 ? true : false}
                     color={item.color}
                     number={item.number}
-                    visibility={item.visibility}
-                    cardIndex={item.cardIndex}
+                    getCardsArray={this.getCardsArray}
                   ></Card>
                 </CardDiv>
               ))}
@@ -181,4 +218,4 @@ class You extends React.Component {
   }
 }
 
-export default You;
+

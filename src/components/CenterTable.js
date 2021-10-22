@@ -1,6 +1,7 @@
 import React from 'react'
 
-function Opponent2() {
+function CenterTable() {
+    
     return (
         <div>
             
@@ -8,4 +9,4 @@ function Opponent2() {
     )
 }
 
-export default Opponent2
+export default CenterTable

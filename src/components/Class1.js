@@ -22,7 +22,7 @@ function Class1() {
 
   return (
     <>
-      <button
+      {/*<button
         onClick={() => {
           let temp = array;
           temp.push("W");
@@ -32,13 +32,13 @@ function Class1() {
         change array
       </button>
       <Class2 array={array}></Class2>
-      <Class3 array={array}></Class3>
+      <Class3 array={array}></Class3>*/}
       <div style={{marginLeft:"50px"}}>
 
-      <Card color="diamonds" number={9} zIndex={1}></Card>
+      {/*<Card color="diamonds" number={9} zIndex={1}></Card>
       <Card color="clubs" number="Q" zIndex={2}></Card>
       <Card color="diamonds" number={5} zIndex={3}></Card>
-      <Card color="clubs" number="K" zIndex={4}></Card>
+      <Card color="clubs" number="K" zIndex={4}></Card>*/}
 
       <div>
           {/**  <Ele1 color="pink" ></Ele1> */}

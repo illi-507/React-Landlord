@@ -8,13 +8,6 @@ import Joker from "../assets/joker.png";
 import { Flex, Button } from "@chakra-ui/react";
 import "./componentCSS.css";
 
-/*const OutterContainer = styled.div`  
-  display: inline-block;
-  position: relative;
-  margin-left:  -40px;  
-  z-index: ${props=> props.zIndex? props.zIndex: "0"};
-  transform: ${props => props.selected? "translateY(-50px)": "unset"};
-`;*/
 
 const OutterContainer = styled.div`  
   display: inline-block;
@@ -112,9 +105,12 @@ class Card extends React.Component {
       isRedJoker: false,
       firstCard: this.props.firstCard,      
       zIndex   : this.props.zIndex,
-      selected: this.props.selected,
-      numberColor: "black"
+      selected: false,      
+      textColor: "black",
+      
+      selectedCards : this.props.selectedCards,
     };
+    this.getCardsArray= this.props.getCardsArray;
   }
 
   componentDidMount() {      
@@ -141,7 +137,7 @@ class Card extends React.Component {
     if(this.state.color === "diamonds" || this.state.color === "hearts" ){
       this.setState({
         ...this.state,
-        numberColor:"red"
+        textColor:"red"
       });
     }
   }
@@ -172,13 +168,21 @@ class Card extends React.Component {
     }
   };
 
+
+
   toggle=()=>{
-     console.log("z-index",this.props.zIndex);    
-      this.setState({
+    let currentCard = {color: this.props.color, number: this.props.number};
+    
+    this.setState({
         ...this.state,
         selected: !this.state.selected
       })
+      let tempSelected = !this.state.selected;
+ //     console.log(currentCard, tempSelected);
+      this.getCardsArray(currentCard, tempSelected);
   }
+  
+
   render() {
     return (
       <OutterContainer 
@@ -205,7 +209,7 @@ class Card extends React.Component {
                 </Flex>
               ) : (
                 <>
-                  <div style={{color:`${this.state.numberColor}`, fontWeight: 700}}>{this.state.number}</div>
+                  <div style={{color:`${this.state.textColor}`, fontWeight: 700}}>{this.state.number}</div>
                   {this.renderSmallIcon()}
                 </>
               )}
